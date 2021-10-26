@@ -6,6 +6,6 @@ Common NN architectures written in barebones tensorflow.
 
 - [x] Feedforward
 - [ ] Basic RNN
-- [ ] LSTM
+- [x] LSTM
 - [ ] Something adversarial?
 - [ ] More?
