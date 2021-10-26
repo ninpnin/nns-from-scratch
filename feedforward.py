@@ -11,40 +11,40 @@ def softmax(x):
     return ex / s
 
 @tf.function
-def dense(x, W, b, activation=True):
+def dense(x, theta, activation=True):
+    W, b = theta
     y = tf.tensordot(W, x, axes=[1,0]) + b
     if activation:
         return relu(y)
     else:
         return y
 
-def neural_network(x0, Ws, bs):
+def neural_network(x0, theta):
     x = x0
-    for W,b in zip(Ws[:-1], bs[:-1]):
-        x = dense(x, W, b)
+    for theta_i in theta[:-1]:
+        x = dense(x, theta_i)
 
-    x = dense(x, Ws[-1], bs[-1], activation=False)
+    x = dense(x, theta[-1], activation=False)
     return softmax(x)
 
 if __name__ == '__main__':
+    # Layer widths, including input and output layers
     sizes = [2,3,2]
 
+    # Initialize parameters
     Ws = zip(sizes[1:], sizes[:-1])
     Ws = [tf.random.normal((i,j)) for i,j in Ws]
     Ws = [tf.Variable(W) for W in Ws]
-
-    #print(Ws)
     
     bs = sizes[1:]
     bs = [tf.random.normal((i,)) for i in bs]
     bs = [tf.Variable(b) for b in bs]
 
-    #print(bs)
+    theta = list(zip(Ws, bs))
 
+    # Run network for 10 randomly generated x's
     for i in range(10):
         x0 = tf.random.normal((sizes[0],))
+        y = neural_network(x0, theta)
         print(x0)
-
-        y = neural_network(x0, Ws, bs)
-
         print(y)
